@@ -12,9 +12,9 @@ email: "retofan@tencent.com"
 # cv_link: https://drive.google.com/file/d/1ZEDsedIbEHabFyLuHzyIaRQ2YGl-H13Z/view?usp=sharing
 cv_links:
   - name: "CV (中文)"
-    url: https://drive.google.com/file/d/1dBNMVV7GVSie8VbcmdACXjchFyfmTHKn/view?usp=drive_link
+    url: /assets/cv/retofan-resume-zh-asu.pdf
   - name: "CV (English)"
-    url: https://drive.google.com/file/d/1s-0xdw00_bf9VrvwL0oJDT5ZPpQtcbV8/view?usp=drive_link
+    url: /assets/cv/retofan-resume-en-asu.pdf
 gscholar: SD4CZKAAAAAJ
 github: RetoFan233
 blog: https://retofan-blog.pages.dev/
