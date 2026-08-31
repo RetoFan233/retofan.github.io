@@ -202,5 +202,27 @@
                 });
             }, 3000);
         }
+
+        // ---- Signature: super-resolution portrait reveal ----
+        // The mosaic backdrop is in CSS; this only decides whether the sharp
+        // image is worth cross-fading. The pending class is added from JS so a
+        // no-JS render never leaves the portrait at opacity 0. Images already
+        // in cache (img.complete) skip the animation, otherwise a reload would
+        // replay a reveal of something the visitor has already seen.
+        var portrait = document.querySelector('.portrait-sr');
+        if (portrait && !prefersReducedMotion) {
+            var portraitImg = portrait.querySelector('img');
+            if (portraitImg && !portraitImg.complete) {
+                portrait.classList.add('sr-pending');
+                var resolve = function () {
+                    portrait.classList.add('sr-resolved');
+                };
+                portraitImg.addEventListener('load', resolve, { once: true });
+                // A broken image must not leave the mosaic as the final state.
+                portraitImg.addEventListener('error', resolve, { once: true });
+                // Safety net, same reasoning as the reveal observer above.
+                window.setTimeout(resolve, 3000);
+            }
+        }
     });
 })();

@@ -16,6 +16,12 @@
     --text-muted: #6b6a64;
     --accent-primary: #c96442;
     --accent-secondary: #b85a3a;
+    /* Surface for filled buttons carrying white labels. The display accent is
+       too light for that: white on #c96442 is only 3.90:1, under AA. Same hue
+       (15deg) and saturation, lower lightness, so the brand colour is
+       unchanged everywhere it appears as text, border or chip. */
+    --accent-fill: #be5836;
+    --accent-fill-hover: #a94b2c;
     /* Accent used as text on a soft accent chip needs more depth than the
        chip's own accent to stay readable (AA at 12.8px). */
     --accent-on-soft: #a34e31;
@@ -50,6 +56,8 @@ html[data-theme="dark"] {
     --text-muted: #9b9a92;
     --accent-primary: #d97757;
     --accent-secondary: #e08f6f;
+    --accent-fill: #c4522c;
+    --accent-fill-hover: #ab4524;
     --accent-on-soft: #e89778;
     --accent-soft: rgba(217, 119, 87, 0.12);
     --accent-softer: rgba(217, 119, 87, 0.08);
@@ -384,7 +392,7 @@ button:focus-visible,
     z-index: 2000;
     padding: 8px 16px;
     border-radius: 10px;
-    background: var(--accent-primary);
+    background: var(--accent-fill);
     color: #fff !important;
     font-weight: 600;
     transform: translateY(-200%);
@@ -500,8 +508,8 @@ button:focus-visible,
 }
 
 .pub-filter-btn.active {
-    background: var(--accent-primary);
-    border-color: var(--accent-primary);
+    background: var(--accent-fill);
+    border-color: var(--accent-fill);
     color: #fff;
     box-shadow: 0 4px 12px rgba(201, 100, 66, 0.25);
 }
@@ -636,7 +644,7 @@ h6.border-bottom a {
 
 #navbar-year .nav-link.active {
     color: #fff !important;
-    background: var(--accent-primary) !important;
+    background: var(--accent-fill) !important;
     box-shadow: 0 4px 12px rgba(201, 100, 66, 0.25);
 }
 
@@ -667,7 +675,7 @@ h2.pt-4 {
    ======================================== */
 
 .btn-primary {
-    background: var(--accent-primary);
+    background: var(--accent-fill);
     border: none;
     border-radius: 12px;
     padding: 8px 24px;
@@ -678,7 +686,7 @@ h2.pt-4 {
 }
 
 .btn-primary:hover {
-    background: var(--accent-secondary);
+    background: var(--accent-fill-hover);
     box-shadow: 0 4px 14px rgba(201, 100, 66, 0.3);
 }
 
@@ -819,6 +827,64 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
     color: var(--text-secondary);
 }
 
+/* Two stacked groups in one column need air between them, or Education and
+   Experience read as a single run-on list. */
+.exp-group + .exp-group {
+    margin-top: 1.25rem !important;
+}
+
+/* Once the columns stack (below md) the gap across the column boundary comes
+   from the column, not the adjacent-sibling rule above, so Experience ran
+   straight into Honors. Give the stacked columns the same spacing. */
+@media (max-width: 767.98px) {
+    .exp-group-col + .exp-group-col {
+        margin-top: 1.25rem;
+    }
+}
+
+/* Awards sit in their own column now. A hairline rule per row lines the years
+   up into a readable column and gives the shorter list some structure without
+   adding bullets. */
+.award-list {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.award-item {
+    display: block;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border-warm);
+}
+
+.award-item:last-child {
+    border-bottom: none;
+}
+
+.award-year {
+    color: var(--text-muted);
+    padding-left: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Research areas as quiet chips. Same shape as the social links so the page
+   keeps one vocabulary for "small standalone label", but with no border, since
+   these are statements rather than things you can click. */
+.interest-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.interest-tag {
+    padding: 3px 11px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-on-soft);
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
 /* ========================================
    Link Styles in Cards
    ======================================== */
@@ -847,25 +913,45 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
 
 /* CV Link
    Scoped to an explicit class: matching on a[href*="cv"] also styled any
-   unrelated URL that happened to contain "cv" (e.g. a paper link). */
+   unrelated URL that happened to contain "cv" (e.g. a paper link).
+
+   Two CVs are two weights, not two identical buttons. The first is the filled
+   primary action; the rest are outlined, so the eye picks a default instead of
+   arbitrating between two equal blocks. */
 .cv-link {
     display: inline-block;
     padding: 6px 16px;
-    background: var(--accent-primary);
+    background: var(--accent-fill);
     color: #fff !important;
+    border: 1px solid var(--accent-fill);
     border-radius: 10px;
     font-weight: 600;
     transition: var(--transition-smooth);
 }
 
 .cv-link:hover {
-    background: var(--accent-secondary);
+    background: var(--accent-fill-hover);
+    border-color: var(--accent-fill-hover);
     box-shadow: 0 4px 14px rgba(201, 100, 66, 0.25);
 }
 
 .cv-link:active {
     transform: translateY(1px) scale(0.98);
     box-shadow: 0 1px 4px rgba(201, 100, 66, 0.2);
+}
+
+.cv-link-secondary {
+    background: transparent;
+    color: var(--accent-on-soft) !important;
+    border-color: var(--border-warm-strong);
+    font-weight: 500;
+}
+
+.cv-link-secondary:hover {
+    background: var(--accent-softer);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary) !important;
+    box-shadow: none;
 }
 
 /* ========================================
@@ -900,7 +986,7 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
    ======================================== */
 
 .badge-primary {
-    background: var(--accent-primary);
+    background: var(--accent-fill);
     color: #fff;
     border-radius: 8px;
     font-weight: 600;
@@ -993,6 +1079,62 @@ html[data-theme="dark"] .alert-warning code { color: #fcd34d; }
 }
 
 /* ========================================
+   Signature: super-resolution portrait reveal
+   ========================================
+
+   The one deliberate flourish on the page. Super-Resolution leads this
+   researcher's stated interests, so the portrait arrives the way an SR model
+   sees it: a 12px mosaic that resolves to the full image once it decodes.
+   Literal to the subject, silent, and over in well under a second.
+
+   The mosaic is inlined (~1.4KB) so it paints with the stylesheet and never
+   costs a round trip. Only opacity and filter animate. */
+
+.portrait-sr {
+    position: relative;
+    /* Shrink-wrap the portrait: the mosaic layer must line up with the image
+       box exactly, and .img-thumbnail adds padding + border to that box. */
+    display: inline-block;
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    /* Upscaled nearest-neighbour, so the low-res source reads as real pixel
+       blocks rather than a soft blur. */
+    background-image: url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQABLAEsAAD/4QCARXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAABAAAARgEoAAMAAAABAAIAAIdpAAQAAAABAAAATgAAAAAAAAEsAAAAAQAAASwAAAABAAOgAQADAAAAAf//AACgAgAEAAAAAQAAAAygAwAEAAAAAQAAABEAAAAA/+0AOFBob3Rvc2hvcCAzLjAAOEJJTQQEAAAAAAAAOEJJTQQlAAAAAAAQ1B2M2Y8AsgTpgAmY7PhCfv/iAdhJQ0NfUFJPRklMRQABAQAAAcgAAAAABDAAAG1udHJSR0IgWFlaIAfgAAEAAQAAAAAAAGFjc3AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD21gABAAAAANMtAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACWRlc2MAAADwAAAAJHJYWVoAAAEUAAAAFGdYWVoAAAEoAAAAFGJYWVoAAAE8AAAAFHd0cHQAAAFQAAAAFHJUUkMAAAFkAAAAKGdUUkMAAAFkAAAAKGJUUkMAAAFkAAAAKGNwcnQAAAGMAAAAPG1sdWMAAAAAAAAAAQAAAAxlblVTAAAACAAAABwAcwBSAEcAQlhZWiAAAAAAAABvogAAOPUAAAOQWFlaIAAAAAAAAGKZAAC3hQAAGNpYWVogAAAAAAAAJKAAAA+EAAC2z1hZWiAAAAAAAAD21gABAAAAANMtcGFyYQAAAAAABAAAAAJmZgAA8qcAAA1ZAAAT0AAAClsAAAAAAAAAAG1sdWMAAAAAAAAAAQAAAAxlblVTAAAAIAAAABwARwBvAG8AZwBsAGUAIABJAG4AYwAuACAAMgAwADEANv/AABEIABEADAMBIgACEQEDEQH/xAAfAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgv/xAC1EAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4eLj5OXm5+jp6vHy8/T19vf4+fr/xAAfAQADAQEBAQEBAQEBAAAAAAAAAQIDBAUGBwgJCgv/xAC1EQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2wBDAAkJCQkJCRAJCRAWEBAQFh4WFhYWHiYeHh4eHiYuJiYmJiYmLi4uLi4uLi43Nzc3NzdBQUFBQUlJSUlJSUlJSUn/2wBDAQsMDBIREiARESBMMyozTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTEz/3QAEAAH/2gAMAwEAAhEDEQA/AKr2Gp37y/ZpGiSNAU2gHe+ehPUcVJbifyE+0jbLtG8e/el8Paxa6g84YtEqFPQkg7sn2xisCPxPZsuZUcN7AEfzr06Va1STlLTocFWl+6iorXqf/9DgNC+/cf8AXFv5VhVu6F9+4/64t/KsKreyJP/Z");
+    background-size: cover;
+    background-position: center;
+    image-rendering: pixelated;
+}
+
+/* The sharp image sits on top of the mosaic and cross-fades in.
+   Explicit width/height attributes on the img reserve the box: with only a
+   height set, the element had no intrinsic width before decode and collapsed
+   to 12px, which also broke the resolved layout on a cold load. */
+.portrait-sr-img {
+    width: 143px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.portrait-sr img {
+    position: relative;
+    display: block;
+    transition: opacity 620ms var(--ease-out), filter 620ms var(--ease-out);
+}
+
+/* Pre-load state is applied by JS, so a no-JS or already-cached render shows
+   the sharp portrait immediately instead of trapping it at opacity 0. */
+.portrait-sr.sr-pending img {
+    opacity: 0;
+    filter: blur(6px);
+}
+
+.portrait-sr.sr-resolved img {
+    opacity: 1;
+    filter: blur(0);
+}
+
+/* ========================================
    Scroll Reveal
    ======================================== */
 
@@ -1027,5 +1169,12 @@ html[data-theme="dark"] .alert-warning code { color: #fcd34d; }
     .will-reveal {
         opacity: 1;
         transform: none;
+    }
+
+    /* The SR reveal is decorative; skip straight to the sharp portrait. */
+    .portrait-sr.sr-pending img,
+    .portrait-sr img {
+        opacity: 1;
+        filter: none;
     }
 }

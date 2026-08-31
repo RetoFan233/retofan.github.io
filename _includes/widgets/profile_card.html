@@ -24,22 +24,21 @@
                         {% endif %}
                         {% if site.data.profile.cv_links %}
                             {% for cv in site.data.profile.cv_links %}
-                                <a class="cv-link mr-2 mb-2" target="_blank" href="{{ cv.url | relative_url }}"><i class="fas fa-file-alt"></i> {{ cv.name }}</a>
+                                <a class="cv-link {% unless forloop.first %}cv-link-secondary{% endunless %} mr-2 mb-2" target="_blank" href="{{ cv.url | relative_url }}"><i class="fas fa-file-alt"></i> {{ cv.name }}</a>
                             {% endfor %}
                             <br/>
                         {% endif %}
                     </div>
                     {% if site.data.profile.portrait_url %}
                     <div class="col-md-auto d-none d-md-block">
-                        <figure class="figure">
+                        <figure class="figure portrait-sr">
                             <img 
                                 src="{{ site.data.profile.portrait_url | relative_url }}" 
                                 alt="Portrait of {{ site.data.profile.primary_name }}"
-                                class="figure-img img-fluid img-thumbnail" 
-                                style="height: 200px;"
+                                class="figure-img img-thumbnail mb-0 portrait-sr-img" 
+                                width="143" height="200"
                                 {% if site.data.profile.portrait_caption %}title="{{ site.data.profile.portrait_caption | strip_html }}"{% endif %}
                             >
-                            <figcaption class="figure-caption text-right"></figcaption>
                         </figure>
                     </div>
                     {% endif %}

@@ -26,9 +26,20 @@ blog: https://retofan-blog.pages.dev/
 orcid: 0009-0008-6507-666X
 
 short_bio: >-
-  The researcher of Tencent Youtu Lab. Major in Computer Vision; Super-Resolution; Generative Models; Multimodal Large Language Model; Anomaly Detection; Anomaly Generation. Currently exploring Agent applications and cost-effective AI-generated short drama production. 
-  Open to connecting with like-minded people — let's brainstorm together! 
-  
+  Researcher at Tencent Youtu Lab, working on computer vision and generative
+  models. Currently exploring agent applications and cost-effective
+  AI-generated short drama production.
+  Always up for comparing notes, so do get in touch.
+
+# Rendered as a labelled group in the experience card. These were previously a
+# semicolon run-on inside short_bio, which read as a wall and scanned poorly.
+research_interests:
+- Computer Vision
+- Super-Resolution
+- Generative Models
+- Multimodal LLM
+- Anomaly Detection
+- Anomaly Generation
 
 portrait_url: /assets/images/photos/Yuanting_Fan.jpg
 # portrait_caption: >-
