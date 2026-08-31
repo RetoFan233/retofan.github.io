@@ -18,6 +18,9 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 baseurl: "" # the subpath of your site, e.g. /blog
+# Needed by absolute_url: Open Graph tags must emit full URLs or link previews
+# on WeChat / Twitter / Slack silently fall back to no image.
+url: "https://retofan233.github.io"
 
 # Build settings
 markdown: kramdown

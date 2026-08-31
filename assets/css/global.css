@@ -11,9 +11,14 @@
     --border-warm-strong: #e5e3d9;
     --text-primary: #141413;
     --text-secondary: #5e5d59;
-    --text-muted: #87867f;
+    /* Muted is tuned per theme: on the parchment canvas it needs to be darker
+       than the dark-theme value to clear WCAG AA (4.5:1) at small sizes. */
+    --text-muted: #6b6a64;
     --accent-primary: #c96442;
     --accent-secondary: #b85a3a;
+    /* Accent used as text on a soft accent chip needs more depth than the
+       chip's own accent to stay readable (AA at 12.8px). */
+    --accent-on-soft: #a34e31;
     --accent-soft: rgba(201, 100, 66, 0.08);
     --accent-softer: rgba(201, 100, 66, 0.06);
     --accent-strong: rgba(201, 100, 66, 0.18);
@@ -21,7 +26,17 @@
     --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.05);
     --shadow-card-hover: 0 0 0 1px var(--border-warm-strong), 0 6px 28px rgba(0, 0, 0, 0.08);
     --card-radius: 16px;
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Motion is layered, not uniform: micro-interactions land fast, surfaces
+       that actually travel get a longer curve. */
+    --t-fast: 140ms;
+    --t-base: 280ms;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-smooth: color var(--t-fast) var(--ease-out),
+        background-color var(--t-fast) var(--ease-out),
+        border-color var(--t-fast) var(--ease-out),
+        box-shadow var(--t-base) var(--ease-out),
+        transform var(--t-fast) var(--ease-out);
 }
 
 /* Warm dark theme (mirrors the Anthropic near-black palette) */
@@ -32,9 +47,10 @@ html[data-theme="dark"] {
     --border-warm-strong: #3d3d3a;
     --text-primary: #faf9f5;
     --text-secondary: #b0aea5;
-    --text-muted: #87867f;
+    --text-muted: #9b9a92;
     --accent-primary: #d97757;
     --accent-secondary: #e08f6f;
+    --accent-on-soft: #e89778;
     --accent-soft: rgba(217, 119, 87, 0.12);
     --accent-softer: rgba(217, 119, 87, 0.08);
     --accent-strong: rgba(217, 119, 87, 0.22);
@@ -205,6 +221,10 @@ html[data-theme="dark"] .navbar.navbar-scrolled {
     background: var(--accent-softer);
 }
 
+.theme-toggle:active {
+    transform: scale(0.94);
+}
+
 .theme-toggle .fa-sun { display: none; }
 .theme-toggle .fa-moon { display: inline-block; }
 
@@ -225,6 +245,20 @@ html[data-theme="dark"] .theme-toggle .fa-moon { display: none; }
    Profile Card Enhancements
    ======================================== */
 
+/* Real <h1> so the page has one document title; visual weight unchanged. */
+.profile-name {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.profile-name small {
+    font-size: 0.5em;
+    font-weight: 400;
+}
+
 .text-profile-position {
     font-weight: 400;
     color: var(--text-secondary);
@@ -234,6 +268,9 @@ html[data-theme="dark"] .theme-toggle .fa-moon { display: none; }
     font-weight: 400;
     color: var(--text-secondary);
     line-height: 1.7;
+    /* Keep the measure in the comfortable 65-75ch reading range; it ran to
+       ~83ch at desktop width before this. */
+    max-width: 68ch;
 }
 
 .inline-badge {
@@ -278,6 +315,11 @@ html[data-theme="dark"] .theme-toggle .fa-moon { display: none; }
     transform: translateY(-1px);
 }
 
+.social-links a.pr-3:active {
+    transform: translateY(0) scale(0.98);
+    background: var(--accent-soft);
+}
+
 .social-links a.pr-3 i {
     transition: var(--transition-smooth);
     margin-right: 2px;
@@ -316,7 +358,7 @@ mark {
 
 /* Uppercase section labels (News / Education / Experience / Awards) */
 .card-section-title {
-    color: var(--accent-primary);
+    color: var(--accent-on-soft);
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -331,6 +373,26 @@ button:focus-visible,
     outline: 2px solid var(--accent-primary);
     outline-offset: 2px;
     border-radius: 6px;
+}
+
+/* Skip link: offscreen until focused, so keyboard users can jump past the nav.
+   Animates transform rather than top to stay off the layout path. */
+.skip-link {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    z-index: 2000;
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: var(--accent-primary);
+    color: #fff !important;
+    font-weight: 600;
+    transform: translateY(-200%);
+    transition: transform var(--t-fast) var(--ease-out);
+}
+
+.skip-link:focus {
+    transform: translateY(0);
 }
 
 /* ========================================
@@ -367,11 +429,11 @@ button:focus-visible,
     background: var(--accent-softer);
 }
 
-.pub-row img.lazy {
-    transition: transform 0.35s ease;
+.pub-row img {
+    transition: transform var(--t-base) var(--ease-out);
 }
 
-.pub-row:hover img.lazy {
+.pub-row:hover img {
     transform: scale(1.02);
 }
 
@@ -390,6 +452,17 @@ button:focus-visible,
 
 .pub-abstract {
     color: var(--text-muted);
+    /* Long abstracts read as a wall of text at full width. */
+    max-width: 88ch;
+}
+
+/* Homepage variant: the abstract is a taste of the paper, not the paper.
+   Full text lives on the publications page. */
+.pub-abstract-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 /* Mobile publication card: stacked cover-on-top layout */
@@ -431,6 +504,10 @@ button:focus-visible,
     border-color: var(--accent-primary);
     color: #fff;
     box-shadow: 0 4px 12px rgba(201, 100, 66, 0.25);
+}
+
+.pub-filter-btn:active {
+    transform: scale(0.97);
 }
 
 .pub-filter-count {
@@ -477,13 +554,16 @@ button:focus-visible,
     min-height: 100px;
 }
 
-img.lazy {
-    background-image: url('images/loading.gif');
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    background-size: 50px 50px;
-    min-height: 80px;
+/* Covers use native loading="lazy"; no placeholder spinner needed.
+   aspect-ratio (not width/height attributes) reserves the box, so the row
+   height stays stable regardless of the source image's own proportions. */
+.pub-cover {
+    display: block;
+    width: 100%;
     border-radius: 12px;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    background: var(--border-warm);
 }
 
 .badge-publication {
@@ -569,15 +649,6 @@ h2.pt-4 {
 }
 
 /* ========================================
-   Card overlays for mobile publication
-   ======================================== */
-
-.card-img-overlay {
-    background-color: var(--overlay-bg) !important;
-    border-radius: var(--card-radius);
-}
-
-/* ========================================
    Footer
    ======================================== */
 
@@ -611,23 +682,46 @@ h2.pt-4 {
     box-shadow: 0 4px 14px rgba(201, 100, 66, 0.3);
 }
 
+.btn-primary:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 1px 4px rgba(201, 100, 66, 0.25);
+}
+
 /* ========================================
-   Modal (WeChat QR Code etc.)
+   Dialog (WeChat QR Code etc.)
    ======================================== */
 
-.modal-content {
-    background: var(--bg-ivory) !important;
+.qr-dialog {
+    max-width: 320px;
+    padding: 0;
     border: 1px solid var(--border-warm);
     border-radius: var(--card-radius);
+    background: var(--bg-ivory);
     color: var(--text-primary);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
 }
 
-.modal-footer {
-    border-color: var(--border-warm);
+.qr-dialog::backdrop {
+    background: rgba(20, 20, 19, 0.55);
 }
 
-.modal-body {
+.qr-dialog-img {
+    display: block;
+    width: 100%;
+}
+
+.qr-dialog-body {
+    padding: 12px 16px;
     color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.qr-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-warm);
 }
 
 /* ========================================
@@ -730,7 +824,7 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
    ======================================== */
 
 .abstract-links a {
-    color: var(--accent-primary) !important;
+    color: var(--accent-on-soft) !important;
     background: var(--accent-soft);
     padding: 2px 8px;
     border-radius: 6px;
@@ -746,8 +840,15 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
     transform: translateY(-1px);
 }
 
-/* CV Link */
-a[href*="cv"], a[href*="CV"] {
+.abstract-links a:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: none;
+}
+
+/* CV Link
+   Scoped to an explicit class: matching on a[href*="cv"] also styled any
+   unrelated URL that happened to contain "cv" (e.g. a paper link). */
+.cv-link {
     display: inline-block;
     padding: 6px 16px;
     background: var(--accent-primary);
@@ -757,9 +858,14 @@ a[href*="cv"], a[href*="CV"] {
     transition: var(--transition-smooth);
 }
 
-a[href*="cv"]:hover, a[href*="CV"]:hover {
+.cv-link:hover {
     background: var(--accent-secondary);
     box-shadow: 0 4px 14px rgba(201, 100, 66, 0.25);
+}
+
+.cv-link:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 1px 4px rgba(201, 100, 66, 0.2);
 }
 
 /* ========================================
@@ -882,6 +988,26 @@ html[data-theme="dark"] .alert-warning code { color: #fcd34d; }
     transform: translateY(-2px);
 }
 
+.back-to-top:active {
+    transform: translateY(0) scale(0.94);
+}
+
+/* ========================================
+   Scroll Reveal
+   ======================================== */
+
+/* Applied by JS only when motion is allowed, so no-JS users always see content. */
+.will-reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+}
+
+.will-reveal.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 /* ========================================
    Reduced Motion
    ======================================== */
@@ -896,5 +1022,10 @@ html[data-theme="dark"] .alert-warning code { color: #fcd34d; }
     *::after {
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
+    }
+
+    .will-reveal {
+        opacity: 1;
+        transform: none;
     }
 }

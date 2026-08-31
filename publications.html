@@ -2,8 +2,6 @@
 layout: default
 title : Publications
 navbar_title: Publications
-body_attr: >-
-  data-spy="scroll" data-target="#navbar-year" data-offset="100"
 ---
 
 {% assign pubs_by_year = site.publications | sort: "date" | reverse | group_by_exp: "item", "item.date | date: '%Y'" %}
@@ -16,15 +14,15 @@ body_attr: >-
     <div class="col-12 col-lg-10">
 
         <div class="pub-filter pt-4" role="group" aria-label="Filter publications by type">
-            <button type="button" class="pub-filter-btn active" data-filter="all">All <span class="pub-filter-count">{{ n_all }}</span></button>
+            <button type="button" class="pub-filter-btn active" data-filter="all" aria-pressed="true">All <span class="pub-filter-count">{{ n_all }}</span></button>
             {% if n_journal > 0 %}
-            <button type="button" class="pub-filter-btn" data-filter="journal">Journal <span class="pub-filter-count">{{ n_journal }}</span></button>
+            <button type="button" class="pub-filter-btn" data-filter="journal" aria-pressed="false">Journal <span class="pub-filter-count">{{ n_journal }}</span></button>
             {% endif %}
             {% if n_conference > 0 %}
-            <button type="button" class="pub-filter-btn" data-filter="conference">Conference <span class="pub-filter-count">{{ n_conference }}</span></button>
+            <button type="button" class="pub-filter-btn" data-filter="conference" aria-pressed="false">Conference <span class="pub-filter-count">{{ n_conference }}</span></button>
             {% endif %}
             {% if n_preprint > 0 %}
-            <button type="button" class="pub-filter-btn" data-filter="preprint">Preprint <span class="pub-filter-count">{{ n_preprint }}</span></button>
+            <button type="button" class="pub-filter-btn" data-filter="preprint" aria-pressed="false">Preprint <span class="pub-filter-count">{{ n_preprint }}</span></button>
             {% endif %}
         </div>
 

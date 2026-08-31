@@ -4,14 +4,14 @@
             <div class="card-body p-5">
                 <div class="row">
                     <div class="col">
-                        <p class="h1 font-weight-normal" style="color: var(--text-primary); font-weight: 700; letter-spacing: -0.02em;">
+                        <h1 class="profile-name">
                             {{ site.data.profile.primary_name }}
                             <small style="color: var(--text-muted);">{{ site.data.profile.secondary_name }}</small>
-                        </p>
+                        </h1>
                         <p class="text-profile-position">
                             {% for position in site.data.profile.positions %}
                             {% if position.logo -%}
-                            <img src="{{ position.logo | relative_url }}" alt="Logo" class="inline-badge"/>
+                            <img src="{{ position.logo | relative_url }}" alt="{{ position.name }}" class="inline-badge"/>
                             {%- endif %}
                             {{ position.name }}<br/>
                             {% endfor %}
@@ -20,11 +20,11 @@
                             {{ site.data.profile.short_bio }}
                         </p>
                         {% if site.data.profile.cv_link %}
-                            <a target="_blank" href="{{ site.data.profile.cv_link }}"><i class="fas fa-file-alt"></i> Curriculum Vitae</a> <br/>
+                            <a class="cv-link" target="_blank" href="{{ site.data.profile.cv_link }}"><i class="fas fa-file-alt"></i> Curriculum Vitae</a> <br/>
                         {% endif %}
                         {% if site.data.profile.cv_links %}
                             {% for cv in site.data.profile.cv_links %}
-                                <a class="pr-2" target="_blank" href="{{ cv.url | relative_url }}"><i class="fas fa-file-alt"></i> {{ cv.name }}</a>
+                                <a class="cv-link mr-2 mb-2" target="_blank" href="{{ cv.url | relative_url }}"><i class="fas fa-file-alt"></i> {{ cv.name }}</a>
                             {% endfor %}
                             <br/>
                         {% endif %}
@@ -34,11 +34,10 @@
                         <figure class="figure">
                             <img 
                                 src="{{ site.data.profile.portrait_url | relative_url }}" 
+                                alt="Portrait of {{ site.data.profile.primary_name }}"
                                 class="figure-img img-fluid img-thumbnail" 
                                 style="height: 200px;"
-                                data-toggle="tooltip" 
-                                data-placement="top" 
-                                title="{{ site.data.profile.portrait_caption }}"
+                                {% if site.data.profile.portrait_caption %}title="{{ site.data.profile.portrait_caption | strip_html }}"{% endif %}
                             >
                             <figcaption class="figure-caption text-right"></figcaption>
                         </figure>
@@ -72,7 +71,7 @@
                         {% endif %}
 
                         {% if site.data.profile.wechat_qrcode %}
-                        <a class="pr-3 no-break" data-toggle="modal" data-target="#modal-wechat" style="cursor: pointer;">
+                        <a class="pr-3 no-break" href="#" data-open-dialog="dialog-wechat" style="cursor: pointer;">
                             <i class="fab fa-weixin"></i> WeChat
                         </a>
                         {% endif %}
@@ -102,21 +101,13 @@
 </div>
 
 {% if site.data.profile.wechat_qrcode %}
-<div class="modal fade" id="modal-wechat" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-body p-0">
-                <img src="{{ site.data.profile.wechat_qrcode }}" class="img-fluid" style="border-radius: var(--card-radius) var(--card-radius) 0 0;">
-            </div>
-            {% if site.data.profile.wechat_prompt %}
-            <div class="modal-body p-1">
-                {{ site.data.profile.wechat_prompt }}
-            </div>
-            {% endif %}
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
+<dialog class="qr-dialog" id="dialog-wechat" aria-label="WeChat QR code">
+    <img src="{{ site.data.profile.wechat_qrcode }}" alt="WeChat QR code" class="img-fluid qr-dialog-img">
+    {% if site.data.profile.wechat_prompt %}
+    <div class="qr-dialog-body">{{ site.data.profile.wechat_prompt }}</div>
+    {% endif %}
+    <div class="qr-dialog-footer">
+        <button type="button" class="btn btn-primary" data-close-dialog>Close</button>
     </div>
-</div>
+</dialog>
 {% endif %}
